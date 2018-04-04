@@ -9,3 +9,5 @@ bin/
 out/
 .gradle/
 build/
+
+.DS_Store
