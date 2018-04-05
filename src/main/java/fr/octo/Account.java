@@ -17,8 +17,14 @@ public class Account {
 
     }
 
-    public void withdraw(int withdraw) {
-
+    void withdraw(int withdraw) throws Exception{
+            if (this.getBalance() < withdraw) {
+                throw new Exception("Not enough money!");
+            } else {
+                String date = "01.01.2018";
+                this.balance = this.balance - withdraw;
+                transactions.addTransactions(date, -1 * withdraw, this.balance);
+            }
     }
 
     String printStatement() {

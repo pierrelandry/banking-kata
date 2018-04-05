@@ -9,17 +9,17 @@ public class TransactionLine {
     public static final int BALANCE_OFFSET = 10;
 
     String date;
-    int deposit;
+    int amount;
     int balance;
 
-    public TransactionLine(String date, int deposit, int balance) {
+    public TransactionLine(String date, int amount, int balance) {
         this.date = date;
-        this.deposit = deposit;
+        this.amount = amount;
         this.balance = balance;
     }
 
-    private String calculatePrintOffsetDeposit() {
-        return IntStream.range(0, DATE_OFFSET - String.valueOf(this.deposit).length())
+    private String calculatePrintOffsetAmount() {
+        return IntStream.range(0, DATE_OFFSET - String.valueOf(this.amount).length())
                 .mapToObj(i -> " ")
                 .collect(Collectors.joining(""));
     }
@@ -32,8 +32,18 @@ public class TransactionLine {
 
     @Override
     public String toString() {
-        return this.date
-                + calculatePrintOffsetDeposit() + "+" + this.deposit
-                + calculatePrintOffsetBalance() + this.balance+ "\n";
+        String transactionLine;
+
+        if (this.amount >= 0) {
+            transactionLine = this.date
+                    + calculatePrintOffsetAmount() + "+" + this.amount
+                    + calculatePrintOffsetBalance() + this.balance + "\n";
+        } else {
+            transactionLine = this.date
+                    + calculatePrintOffsetAmount() + " " + this.amount
+                    + calculatePrintOffsetBalance() + this.balance + "\n";
+        }
+
+        return transactionLine;
     }
 }

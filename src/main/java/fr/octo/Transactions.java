@@ -11,8 +11,8 @@ public class Transactions {
         this.transactionLines = new ArrayList<>();
     }
 
-    void addTransactions(String date, int deposit, int balance) {
-        TransactionLine transactionLine = new TransactionLine(date, deposit, balance);
+    void addTransactions(String date, int amount, int balance) {
+        TransactionLine transactionLine = new TransactionLine(date, amount, balance);
         transactionLines.add(transactionLine);
     }
 
