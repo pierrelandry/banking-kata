@@ -1,16 +1,36 @@
 package fr.octo;
 
 import javafx.scene.media.AudioClip;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@RunWith(MockitoJUnitRunner.class)
 public class AccountTest {
+
+    @Mock private DateProvider dateProvider;
+
+    @InjectMocks private Account account;
+
+    @Before public void setUp () {
+        Mockito.when(dateProvider.getNow()).thenReturn(LocalDate.of(2018, 4, 1));
+
+        account = new Account(dateProvider);
+    }
 
     @Test
     public void balanceShouldBeZeroAtTheInitialization() throws Exception {
         // Given
-        Account account = new Account();
 
         // When
         int balanceResult = account.getBalance();
@@ -22,7 +42,6 @@ public class AccountTest {
     @Test
     public void balanceShouldBeEqualTo50AfterAFirstDepositOf100() throws Exception {
         // Given
-        Account account = new Account();
 
         // When
         account.deposit(50);
@@ -36,7 +55,6 @@ public class AccountTest {
     @Test
     public void balanceShouldEqualTo300AfterThreeSuccessiveDepositOf50() throws Exception {
         // Given
-        Account account = new Account();
 
         // When
         account.deposit(100);
@@ -50,7 +68,6 @@ public class AccountTest {
     @Test(expected = Exception.class)
     public void withdrawShouldThrownAnExceptionWhenNotEnoughOfMoney() throws Exception {
         // Given
-        Account account = new Account();
 
         // When
         account.deposit(40);
@@ -61,7 +78,6 @@ public class AccountTest {
     @Test
     public void withdrawShouldUpdateBalanceByRemoving40() throws Exception {
         // Given
-        Account account = new Account();
 
         // When
         account.deposit(100);
@@ -74,7 +90,6 @@ public class AccountTest {
     @Test
     public void balanceShouldEqualToZeroAfterThreeSuccessiveWithdrawsOf50() throws Exception {
         // Given
-        Account account = new Account();
         account.deposit(150);
 
         // When
@@ -90,7 +105,6 @@ public class AccountTest {
     @Test
     public void printStatementShouldJustHaveHeaderAtTheBeginning() throws Exception {
         // Given
-        Account account = new Account();
 
         // When
 
@@ -101,21 +115,19 @@ public class AccountTest {
     @Test
     public void printStatementShouldDisplayTheFirstDepositOf100() throws Exception {
         // Given
-        Account account = new Account();
 
         // When
         account.deposit(100);
 
         //Then
         assertThat(account.printStatement()).isEqualTo("\nDate         Amount   Balance\n" +
-                "01.01.2018     +100       100\n");
+                "01.04.2018     +100       100\n");
 
     }
 
     @Test
     public void printStatementShouldDisplayTheTwoDepositsTransactions() throws Exception {
         // Given
-        Account account = new Account();
 
         // When
         account.deposit(100);
@@ -123,29 +135,27 @@ public class AccountTest {
 
         //Then
         assertThat(account.printStatement()).isEqualTo("\nDate         Amount   Balance\n" +
-                "01.01.2018     +100       100\n" +
-                "01.01.2018      +50       150\n");
+                "01.04.2018     +100       100\n" +
+                "01.04.2018      +50       150\n");
 
     }
 
     @Test
     public void printStatementShouldDisplayTheDepositTransactionsWithFourNumbers() throws Exception {
         // Given
-        Account account = new Account();
 
         // When
         account.deposit(1000);
 
         //Then
         assertThat(account.printStatement()).isEqualTo("\nDate         Amount   Balance\n" +
-                "01.01.2018    +1000      1000\n");
+                "01.04.2018    +1000      1000\n");
 
     }
 
     @Test
     public void printStatementShouldDisplayTAllTransactions() throws Exception {
         // Given
-        Account account = new Account();
 
         // When
         account.deposit(900);
@@ -153,15 +163,14 @@ public class AccountTest {
 
         //Then
         assertThat(account.printStatement()).isEqualTo("\nDate         Amount   Balance\n" +
-                "01.01.2018     +900       900\n" +
-                "01.01.2018     -100       800\n");
+                "01.04.2018     +900       900\n" +
+                "01.04.2018     -100       800\n");
 
     }
 
     @Test
     public void displaySomeTransactions() throws Exception {
         // Given
-        Account account = new Account();
 
         // When
         account.deposit(900);
@@ -178,13 +187,26 @@ public class AccountTest {
 
         //Then
         assertThat(printResult).isEqualTo("\nDate         Amount   Balance\n" +
-                "01.01.2018     +900       900\n" +
-                "01.01.2018     -100       800\n" +
-                "01.01.2018     -100       700\n" +
-                "01.01.2018      +50       750\n" +
-                "01.01.2018    +1000      1750\n" +
-                "01.01.2018     -100      1650\n" +
-                "01.01.2018    -1650         0\n");
+                "01.04.2018     +900       900\n" +
+                "01.04.2018     -100       800\n" +
+                "01.04.2018     -100       700\n" +
+                "01.04.2018      +50       750\n" +
+                "01.04.2018    +1000      1750\n" +
+                "01.04.2018     -100      1650\n" +
+                "01.04.2018    -1650         0\n");
+
+    }
+
+    @Test
+    public void formatDateShouldDisplayTheCorrectFormat() throws Exception {
+        // Given
+        LocalDate nonFormattedDate = LocalDate.of(2018, 4, 10);
+
+        // When
+        String formattedDate = account.formatDate(nonFormattedDate);
+
+        //Then
+        assertThat(formattedDate).isEqualTo("10.04.2018");
 
     }
 }
